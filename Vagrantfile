@@ -1,5 +1,5 @@
+# Run Ansible from the Vagrant VM
 Vagrant.configure("2") do |config|
-  # Run Ansible from the Vagrant VM
   config.vm.box = "ubuntu/xenial64"  
   config.vm.hostname = "webserver"
   config.vm.network "private_network", ip: "192.168.33.10"
