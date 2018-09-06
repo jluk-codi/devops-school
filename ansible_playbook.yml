@@ -81,6 +81,5 @@
         name: test
         state: started
         volumes:
-          - /src/www:/usr/share/nginx/html:r
+          - /src/www:/usr/share/nginx/html:ro
         network_mode: host
-        
