@@ -8,7 +8,7 @@
       apt:
         update_cache: yes
 
-    - name: 'Looping installation of apt'
+    - name: 'Looping installation of packages.'
       apt: 
         name: '{{ item }}'
         state: latest
@@ -19,10 +19,7 @@
         - ca-certificates
         - software-properties-common
         - curl
-        - docker-ce
-        - python3
         - python-pip
-        - docker
   
     - name: 'Add Docker apt key'
       apt_key:
@@ -42,14 +39,27 @@
         repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_lsb.codename}} stable'
         update_cache: yes
 
+    - name: 'Install Docker apt package'
+      apt:
+        pkg: docker-ce
+        state: latest
+
     - name: 'Ensure Docker service is installed and started'
       service:
         name: 'docker'
         state: restarted
         enabled: yes
 
+    - name: 'docker-py install'
+      pip:
+        name: 'docker'
+        state: latest
+
     - name: 'Create directory'
-      file: 'path=/src/www state=directory'
+      file: 
+        path: /src/www
+        state: directory
+        mode: 0755
 
     - name: 'Create file'
       copy:
