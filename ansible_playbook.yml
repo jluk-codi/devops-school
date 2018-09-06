@@ -3,28 +3,28 @@
   remote_user: vagrant
   sudo: yes
   tasks: 
-    - name: "update"
+    - name: 'update'
       apt:
         update_cache: yes
-    - name: "Install linux-image-extra-"
+    - name: 'Install linux-image-extra-'
       apt:
           name: linux-image-extra-4.13.0-36-generic
           state: latest
     - name: 'Install linux-image-extra-'
       apt:
-        name: linux-image-extra-virtual
+        name: 'linux-image-extra-virtual'
         state: latest
     - name: 'Install apt-transport-https'
       apt:
-        name: apt-transport-https
+        name: 'apt-transport-https'
         state: latest
     - name: 'Install ca-certificates'
       apt:
-        name: ca-certificates
+        name: 'ca-certificates'
         state: latest
     - name: 'Install software-properties-common'
       apt:
-        name: software-properties-common
+        name: 'software-properties-common'
         state: latest
     - name: 'Add Docker apt key'
       apt_key:
@@ -35,7 +35,7 @@
       ignore_errors: true
     - name: 'Ensure curl is present.'
       apt:
-        name: curl
+        name: 'curl'
         state: latest
       when: add_repository_key|failed
     - name: 'Add Docker apt key.'
@@ -51,34 +51,33 @@
       apt:
         pkg: docker-ce
         state: latest
-        update_cache: yes
-    - name: 'Ensure Docker service is installed and restarted'
+    - name: 'Ensure Docker service is installed and started'
       service:
-        name: docker
+        name: 'docker'
         state: restarted
         enabled: yes
-    - name: 'Create Dir'
+    - name: 'Create directory'
       file: 'path=/src/www state=directory'
     - name: 'Create file'
       copy:
         content: '<body>Just a simple test</body>'
         dest: /src/www/index.html
-    - name: 'python'
+    - name: 'Installing Python'
       apt:
-        name: python3
+        name: 'python3'
         state: latest
     - name: 'pip install'
       apt:
-        name: python-pip
+        name: 'python-pip'
         state: latest
-    - name: 'docker-py'
+    - name: 'docker-py install'
       pip:
-        name: docker
+        name: 'docker'
         state: latest
-    - name: 'setting up docker with nginx.'
+    - name: 'Setting up docker with nginx.'
       docker_container:
         image: nginx
-        name: test
+        name: 'test'
         state: started
         volumes:
           - /src/www:/usr/share/nginx/html:ro
