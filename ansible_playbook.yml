@@ -81,10 +81,6 @@
         name: test
         state: started
         volumes:
-          # - /src/www:/src/www:rw
           - /src/www:/usr/share/nginx/html:r
         network_mode: host
-        # docker_volume:
-          # state: present
-          # - name: Deactivate the default nginx site
-          #   template: src=/src/www/test.txt dest=/usr/share/nginx/html/index.html
+        
