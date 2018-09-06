@@ -1,0 +1,90 @@
+-
+  hosts: all
+  remote_user: vagrant
+  sudo: yes
+  tasks: 
+    - name: "update"
+      apt:
+        update_cache: yes
+    - name: "Install linux-image-extra-"
+      apt:
+          name: linux-image-extra-4.13.0-36-generic
+          state: latest
+    - name: 'Install linux-image-extra-'
+      apt:
+        name: linux-image-extra-virtual
+        state: latest
+    - name: 'Install apt-transport-https'
+      apt:
+        name: apt-transport-https
+        state: latest
+    - name: 'Install ca-certificates'
+      apt:
+        name: ca-certificates
+        state: latest
+    - name: 'Install software-properties-common'
+      apt:
+        name: software-properties-common
+        state: latest
+    - name: 'Add Docker apt key'
+      apt_key:
+        url: 'https://download.docker.com/linux/ubuntu/gpg'
+        id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+        state: present
+      register: add_repository_key
+      ignore_errors: true
+    - name: 'Ensure curl is present.'
+      apt:
+        name: curl
+        state: latest
+      when: add_repository_key|failed
+    - name: 'Add Docker apt key.'
+      shell: 'curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
+      args:
+        warn: no
+      when: add_repository_key|failed
+    - name: 'Add docker apt repo'
+      apt_repository:
+        repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_lsb.codename}} stable'
+        update_cache: yes
+    - name: 'Install Docker apt package'
+      apt:
+        pkg: docker-ce
+        state: latest
+        update_cache: yes
+    - name: 'Ensure Docker service is installed and restarted'
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
+    - name: 'Create Dir'
+      file: 'path=/src/www state=directory'
+    - name: 'Create file'
+      copy:
+        content: '<body>Just a simple test</body>'
+        dest: /src/www/index.html
+    - name: 'python'
+      apt:
+        name: python3
+        state: latest
+    - name: 'pip install'
+      apt:
+        name: python-pip
+        state: latest
+    - name: 'docker-py'
+      pip:
+        name: docker
+        state: latest
+    - name: 'setting up docker with nginx.'
+      docker_container:
+        image: nginx
+        name: test
+        state: started
+        volumes:
+          # - /src/www:/src/www:rw
+          - /src/www:/usr/share/nginx/html:r
+        network_mode: host
+        # docker_volume:
+          # state: present
+          # - name: Deactivate the default nginx site
+          #   template: src=/src/www/test.txt dest=/usr/share/nginx/html/index.html
